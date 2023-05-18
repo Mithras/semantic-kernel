@@ -9,7 +9,8 @@
     "mhutchie.git-graph",
     "esbenp.prettier-vscode",
     "streetsidesoftware.code-spell-checker",
-    "ms-dotnettools.csharp"
+    "ms-dotnettools.csharp",
+    "adrianwilczynski.user-secrets"
   ]
   // "features": {
   //   "ghcr.io/devcontainers/features/azure-cli:1": {}
