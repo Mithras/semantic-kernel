@@ -1,0 +1,11 @@
+{
+  "gitlens.currentLine.enabled": false,
+  "gitlens.codeLens.enabled": false,
+  "git.allowForcePush": true,
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  }
+}

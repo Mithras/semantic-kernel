@@ -1,0 +1,17 @@
+{
+  "name": "semantic-kernel",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "settings": {},
+  "extensions": [
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker",
+    "ms-dotnettools.csharp"
+  ]
+  // "features": {
+  //   "ghcr.io/devcontainers/features/azure-cli:1": {}
+  // }
+}
