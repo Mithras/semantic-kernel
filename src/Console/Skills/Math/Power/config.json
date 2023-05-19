@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "description": "input^2",
+  "description": "Calculates: input ^ x",
   "type": "completion",
   "completion": {
     "max_tokens": 256,
@@ -13,7 +13,12 @@
     "parameters": [
       {
         "name": "input",
-        "description": "input",
+        "description": "Input",
+        "defaultValue": ""
+      },
+      {
+        "name": "x",
+        "description": "Power to raise input to",
         "defaultValue": ""
       }
     ]
