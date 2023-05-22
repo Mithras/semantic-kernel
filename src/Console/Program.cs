@@ -10,6 +10,8 @@ using Microsoft.SemanticKernel.Memory;
 using Microsoft.SemanticKernel.CoreSkills;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AI.OpenAI.ChatCompletion;
+using Microsoft.SemanticKernel.Reliability;
+using Microsoft.SemanticKernelTest.Skills;
 
 var config =
     new ConfigurationBuilder()
@@ -27,7 +29,7 @@ var loggerFactory = LoggerFactory.Create(builder =>
 });
 
 
-var kernel = Kernel.Builder
+var kernelBuilder = new KernelBuilder()
     .WithConfiguration(new KernelConfig()
         .AddAzureTextCompletionService(
             deploymentName: config["OpenAI:TextCompletion:DeploymentName"]!,
@@ -44,10 +46,13 @@ var kernel = Kernel.Builder
             endpoint: config["OpenAI:Endpoint"]!,
             apiKey: config["OpenAI:ApiKey"]!
         )
+    // DefaultHttpRetryHandlerFactory -> DefaultHttpRetryHandler(HttpRetryConfig)
+    //  .SetDefaultHttpRetryConfig(new HttpRetryConfig { ... })
+    //  .SetHttpRetryHandlerFactory(...)
     )
     .WithLogger(loggerFactory.CreateLogger<Kernel>())
-    .WithMemoryStorage(new VolatileMemoryStore())
-    .Build();
+    .WithMemoryStorage(new VolatileMemoryStore());
+var kernel = kernelBuilder.Build();
 
 
 // === CreateSemanticFunction ===
@@ -70,16 +75,16 @@ var kernel = Kernel.Builder
 // === ContextVariables ===
 // const string prompt = @"
 // {{$history}}
-// Human: {{$human_input}}
+// Human: {{$input}}
 // AI:";
 // var chatFunction = kernel.CreateSemanticFunction(prompt, "Chat", "ChatBot");
 // var context = new ContextVariables { ["history"] = "" };
-// Func<string, Task<string>> chat = async (human_input) =>
+// Func<string, Task<string>> chat = async (input) =>
 // {
-//     context["human_input"] = human_input;
+//     context.Update(input);
 //     var ai_answer = await kernel.RunAsync(context, chatFunction);
 //     context["history"] += $@"
-// Human: {context["human_input"]}
+// Human: {context.Input}
 // AI: {ai_answer}";
 //     return ai_answer.ToString();
 // };
@@ -89,13 +94,20 @@ var kernel = Kernel.Builder
 
 
 // === SequentialPlanner ===
-// var mathSkill = kernel.ImportSemanticSkillFromDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Skills"), "Math"); // {"Power": ..., "Add": ...}
-// var functionsView = kernel.Skills.GetFunctionsView(); // NativeFunction: {}, SemanticFunctions: {"Math": {"Power": ..., "Add": ...}}
+// var nativeMathSkill = kernel.ImportSkill(new NativeMath(), "NativeMath"); // {"Add": ..., "Subtract": ...}
+// var semanticMathSkill = kernel.ImportSemanticSkillFromDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Skills"), "SemanticMath"); // {"Power": ... }
+// var functionsView = kernel.Skills.GetFunctionsView(); // NativeFunction: {"NativeMath": {"Add": ..., "Subtract": ...}}, SemanticFunctions: {"SemanticMath": {"Power": ...}}
 // var planner = new SequentialPlanner(kernel);
 // var prompt = "I need to add 2 to 3 and then raise the result to power of 2";
 // var plan = await planner.CreatePlanAsync(prompt); // Math.Add(3, 2) -> Math.Power(5, 2)
-// Console.WriteLine(JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
 // Console.WriteLine(await kernel.RunAsync(plan)); // 25
+// // or
+// // while (plan.HasNextStep)
+// // {
+// //     await kernel.StepAsync(plan);
+// //     Console.WriteLine(plan.State.Input);
+// // }
+// Console.WriteLine(JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
 
 
 // === Embeddings / Memory / TextMemorySkill ===
@@ -122,15 +134,14 @@ var kernel = Kernel.Builder
 
 
 // === ChatGPT ===
-var chatCompletion = kernel.GetService<IChatCompletion>();
-var chat = (OpenAIChatHistory)chatCompletion.CreateNewChat();
-chat.AddUserMessage("2+2=");
-chat.AddAssistantMessage(await chatCompletion.GenerateMessageAsync(chat));
-Console.WriteLine(chat.Messages[^1].Content);
+// var chatCompletion = kernel.GetService<IChatCompletion>();
+// var chat = (OpenAIChatHistory)chatCompletion.CreateNewChat();
+// chat.AddUserMessage("2+2=");
+// chat.AddAssistantMessage(await chatCompletion.GenerateMessageAsync(chat));
+// Console.WriteLine(chat.Messages[^1].Content);
 
 
 // TODO: ActionPlanner
-// TODO: ISemanticTextMemory
 
 
 Debugger.Break();
