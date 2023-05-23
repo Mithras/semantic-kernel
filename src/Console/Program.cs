@@ -13,6 +13,7 @@ using Microsoft.SemanticKernel.Connectors.AI.OpenAI.ChatCompletion;
 using Microsoft.SemanticKernel.Reliability;
 using Microsoft.SemanticKernelTest.Skills;
 using Microsoft.SemanticKernel.TemplateEngine;
+using Microsoft.SemanticKernel.AI.TextCompletion;
 
 var config =
     new ConfigurationBuilder()
@@ -96,6 +97,20 @@ var kernel = kernelBuilder.Build();
 // Console.WriteLine(await chat("<previous>*3=")); // 30
 
 
+// === ActionPlanner ===
+// var nativeMathSkill = kernel.ImportSkill(new NativeMath(), "NativeMath"); // {"Add": ..., "Subtract": ...}
+// var semanticMathSkill = kernel.ImportSemanticSkillFromDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Skills"), "SemanticMath"); // {"Power": ... }
+// var functionsView = kernel.Skills.GetFunctionsView(); // NativeFunction: {"NativeMath": {"Add": ..., "Subtract": ...}}, SemanticFunctions: {"SemanticMath": {"Power": ...}}
+// var context = new ContextVariables();
+// var planner = new ActionPlanner(kernel);
+// var prompt1 = "I need to add 2 to 3";
+// var plan1 = await planner.CreatePlanAsync(prompt1); // Math.Add(3, 2)
+// Console.WriteLine(await kernel.RunAsync(context, plan1)); // 5
+// var prompt2 = "I need to raise {{$input}} to power of 2";
+// var plan2 = await planner.CreatePlanAsync(prompt2); // Math.Power(5, 2)
+// Console.WriteLine(await plan2.InvokeAsync(new SKContext(context))); // 25
+
+
 // === SequentialPlanner ===
 // var nativeMathSkill = kernel.ImportSkill(new NativeMath(), "NativeMath"); // {"Add": ..., "Subtract": ...}
 // var semanticMathSkill = kernel.ImportSemanticSkillFromDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Skills"), "SemanticMath"); // {"Power": ... }
@@ -108,6 +123,8 @@ var kernel = kernelBuilder.Build();
 // // while (plan.HasNextStep)
 // // {
 // //     await kernel.StepAsync(plan);
+// //     // or
+// //     // await plan.InvokeNextStepAsync(kernel.CreateNewContext());
 // //     Console.WriteLine(plan.State.Input);
 // // }
 // Console.WriteLine(JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
@@ -151,25 +168,31 @@ var kernel = kernelBuilder.Build();
 // var renderedPrompt = await promptRenderer.RenderAsync(prompt, kernel.CreateNewContext());
 
 
-// === TODO: ActionPlanner ===
-// var nativeMathSkill = kernel.ImportSkill(new NativeMath(), "NativeMath"); // {"Add": ..., "Subtract": ...}
-// var semanticMathSkill = kernel.ImportSemanticSkillFromDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Skills"), "SemanticMath"); // {"Power": ... }
-// var functionsView = kernel.Skills.GetFunctionsView(); // NativeFunction: {"NativeMath": {"Add": ..., "Subtract": ...}}, SemanticFunctions: {"SemanticMath": {"Power": ...}}
-// var planner = new ActionPlanner(kernel);
-// var prompt = "I need to add 2 to 3 and then raise the result to power of 2";
-// var plan = await planner.CreatePlanAsync(prompt); // Math.Add(3, 2) -> Math.Power(5, 2)
-// Console.WriteLine(await kernel.RunAsync(plan)); // 25
-// // or
-// // while (plan.HasNextStep)
-// // {
-// //     await kernel.StepAsync(plan);
-// //     Console.WriteLine(plan.State.Input);
-// // }
-// Console.WriteLine(JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
+// === DallE ===
+// throw new NotImplementedException();
+
+
+// === ITextCompletion.CompleteStreamAsync() ===
+// var textCompletion = kernel.GetService<ITextCompletion>();
+// await foreach (string chunk in textCompletion.CompleteStreamAsync("Count from 1 to 10", new()))
+// {
+//     Console.Write(chunk);
+// }
+
+
+// === IChatCompletion.GenerateMessageStreamAsync() ===
+// var chatCompletion = kernel.GetService<IChatCompletion>();
+// var chat = (OpenAIChatHistory)chatCompletion.CreateNewChat();
+// chat.AddUserMessage("Count from 1 to 10");
+// chat.AddAssistantMessage("");
+// await foreach (var chunk in chatCompletion.GenerateMessageStreamAsync(chat))
+// {
+//     chat.Messages[^1].Content += chunk;
+// }
+// Console.WriteLine(chat.Messages[^1].Content);
 
 
 // === TEST ===
-// ~ Example08_RetryHandler
 
 
 Debugger.Break();
