@@ -11,15 +11,15 @@ public class NativeMath
     [SKFunctionName("Add")]
     [SKFunctionInput(Description = "The value to add")]
     [SKFunctionContextParameter(Name = "Amount", Description = "Amount to add")]
-    public Task<string> AddAsync(string initialValueText, SKContext context) =>
-        AddOrSubtractAsync(initialValueText, context, add: true);
+    public Task<string> AddAsync(string input, SKContext context) =>
+        AddOrSubtractAsync(input, context, add: true);
 
     [SKFunction("Subtracts value to a value")]
     [SKFunctionName("Subtract")]
     [SKFunctionInput(Description = "The value to subtract")]
     [SKFunctionContextParameter(Name = "Amount", Description = "Amount to subtract")]
-    public Task<string> SubtractAsync(string initialValueText, SKContext context) =>
-        AddOrSubtractAsync(initialValueText, context, add: false);
+    public Task<string> SubtractAsync(string input, SKContext context) =>
+        AddOrSubtractAsync(input, context, add: false);
 
     private static Task<string> AddOrSubtractAsync(string initialValueText, SKContext context, bool add)
     {

@@ -26,7 +26,7 @@
     <!-- <PackageReference Include="Microsoft.SemanticKernel.Skills.OpenAPI" Version="0.14.547.1-preview" /> -->
     <!-- <PackageReference Include="Microsoft.SemanticKernel.Skills.Web" Version="0.14.547.1-preview" /> -->
     <PackageReference Include="Microsoft.SemanticKernel.Planning.SequentialPlanner" Version="0.14.547.1-preview" />
-    <!-- <PackageReference Include="Microsoft.SemanticKernel.Planning.ActionPlanner" Version="0.14.547.1-preview" /> -->
+    <PackageReference Include="Microsoft.SemanticKernel.Planning.ActionPlanner" Version="0.14.547.1-preview" />
   </ItemGroup>
 
 </Project>
