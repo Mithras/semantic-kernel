@@ -1,12 +1,9 @@
 {
   "recommendations": [
     "ms-vscode-remote.remote-containers",
-    "eamodio.gitlens",
     "mhutchie.git-graph",
     "esbenp.prettier-vscode",
-    "streetsidesoftware.code-spell-checker",
-    "ms-dotnettools.csharp",
-    "adrianwilczynski.user-secrets"
+    "streetsidesoftware.code-spell-checker"
   ],
   "unwantedRecommendations": []
 }

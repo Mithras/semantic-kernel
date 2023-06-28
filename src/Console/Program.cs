@@ -112,22 +112,22 @@ var kernel = kernelBuilder.Build();
 
 
 // === SequentialPlanner ===
-// var nativeMathSkill = kernel.ImportSkill(new NativeMath(), "NativeMath"); // {"Add": ..., "Subtract": ...}
-// var semanticMathSkill = kernel.ImportSemanticSkillFromDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Skills"), "SemanticMath"); // {"Power": ... }
-// var functionsView = kernel.Skills.GetFunctionsView(); // NativeFunction: {"NativeMath": {"Add": ..., "Subtract": ...}}, SemanticFunctions: {"SemanticMath": {"Power": ...}}
-// var planner = new SequentialPlanner(kernel);
-// var prompt = "I need to add 2 to 3 and then raise the result to power of 2";
-// var plan = await planner.CreatePlanAsync(prompt); // Math.Add(3, 2) -> Math.Power(5, 2)
-// Console.WriteLine(await kernel.RunAsync(plan)); // 25
-// // or
-// // while (plan.HasNextStep)
-// // {
-// //     await kernel.StepAsync(plan);
-// //     // or
-// //     // await plan.InvokeNextStepAsync(kernel.CreateNewContext());
-// //     Console.WriteLine(plan.State.Input);
-// // }
-// Console.WriteLine(JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
+var nativeMathSkill = kernel.ImportSkill(new NativeMath(), "NativeMath"); // {"Add": ..., "Subtract": ...}
+var semanticMathSkill = kernel.ImportSemanticSkillFromDirectory(Path.Combine(Directory.GetCurrentDirectory(), "Skills"), "SemanticMath"); // {"Power": ... }
+var functionsView = kernel.Skills.GetFunctionsView(); // NativeFunction: {"NativeMath": {"Add": ..., "Subtract": ...}}, SemanticFunctions: {"SemanticMath": {"Power": ...}}
+var planner = new SequentialPlanner(kernel);
+var prompt = "I need to add 2 to 3 and then raise the result to power of 2";
+var plan = await planner.CreatePlanAsync(prompt); // Math.Add(3, 2) -> Math.Power(5, 2)
+Console.WriteLine(await kernel.RunAsync(plan)); // 25
+// or
+// while (plan.HasNextStep)
+// {
+//     await kernel.StepAsync(plan);
+//     // or
+//     // await plan.InvokeNextStepAsync(kernel.CreateNewContext());
+//     Console.WriteLine(plan.State.Input);
+// }
+Console.WriteLine(JsonSerializer.Serialize(plan, new JsonSerializerOptions { WriteIndented = true }));
 
 
 // === Embeddings / Memory / TextMemorySkill ===
